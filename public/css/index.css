@@ -1,0 +1,141 @@
+/* .wrapper {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 0.3em; 
+    justify-items: center;
+    border: 1px solid black;
+} */
+/* @media all and (max-width: 480px) {
+    .wrapper {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        justify-items: center;   
+        justify-content: center; 
+    }
+}
+.wrapper img {
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+   
+}  */
+
+/* hide input file + style for button file*/
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.inputfile + label {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: white;
+    border-radius: 5px;
+    background-color: rgb(73, 167, 167);
+    display: inline-block;
+    cursor: pointer;
+    padding: 0 0.3em;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    background-color: red;
+}
+.inputfile + label{
+	cursor: pointer; /* "hand" cursor */
+}
+/* style for button */
+button {
+    border-radius: 5px;
+    background-color: rgb(73, 167, 167);
+    font-weight: 700;
+    color: aliceblue;
+}
+
+button:hover {
+    background-color: red;
+}
+
+/* style cho album */
+ul {
+    list-style-type: none;
+}
+  
+li {
+    display: inline-block;
+}
+/* ẩn checkbox mặc định */
+input[type="checkbox"][id^="cb"] {
+    display: none;
+}
+  
+.img-label {
+    border: 1px solid #fff;
+    padding: 10px;
+    display: block;
+    position: relative;
+    margin: 10px;
+    cursor: pointer;
+}
+
+.img-span::before {
+    background-color: white;
+    color: white;
+    content: " ";
+    display: block;
+    border-radius: 50%;
+    border: 1px solid grey;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 28px;
+    transition-duration: 0.4s;
+    transform: scale(0);
+}
+  
+.img-label img {
+    height: 200px;
+    width: 150px;
+    transition-duration: 0.2s;
+    transform-origin: 50% 50%;
+    object-fit: cover;
+}
+
+input:checked + label {
+    /* border-color: rgb(155, 130, 130); */
+    background-color: rgb(201, 193, 193);
+}
+  
+input:checked + label > .img-span::before {
+    content: "✓";
+    background-color: rgb(21, 70, 231);
+    transform: scale(1);
+    /* opacity: 0; */
+}
+  
+input:checked +  label img{
+    transform: scale(0.9);
+    box-shadow: 0 0 5px #333;
+    z-index: -1;
+}
+
+
+input:not(:checked) + label:hover > .img-span::before {
+    content: "✓";
+    background-color: gray;
+    color: white;
+    opacity: 0.8;
+    transform: scale(1);
+    
+}
+
+hr {
+    border: 1px solid red;
+}

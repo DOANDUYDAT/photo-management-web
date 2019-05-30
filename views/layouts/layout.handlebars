@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My App</title>
+	<link rel="stylesheet" href="/css/bootstrap.css" />
+	<link rel="stylesheet" href="/css/style.css" />
+	<link rel="stylesheet" href="/css/index.css" />
+	<link rel="stylesheet" href="/css/update.css" />  
+	{{!-- <link rel="stylesheet" href="/css/test.css" />   --}}
+  {{!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous"> --}}
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+  {{!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> --}}
+</head>
+<body onload="loadAlbum()">
+	<div class="container">
+      <div class="header clearfix">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+           
+            
+            {{#if user}}
+              <li role="presentation"><a href="/">Home</a></li>
+              <li role="presentation"><a href="/users/update">Update</a></li>
+              <li role="presentation"><a href="/users/logout">Logout</a></li>
+            {{else}}
+              <li role="presentation"><a href="/users/login">Login</a></li>
+              <li role="presentation"><a href="/users/register">Register</a></li>
+            {{/if}}
+          </ul>
+        </nav>
+        <h3 class="text-muted">My App</h3>
+      </div>
+
+
+      <div class="row">
+        <div class="col-lg-12">
+          {{#if success_msg}}
+            <div class="alert alert-success">{{success_msg}}</div>
+          {{/if}}
+
+          {{#if error_msg}}
+            <div class="alert alert-danger">{{error_msg}}</div>
+          {{/if}}
+
+          {{#if error}}
+            <div class="alert alert-danger">{{error}}</div>
+          {{/if}}
+          
+          {{{body}}}
+        </div>
+
+        
+      </div>
+
+      <footer class="footer">
+        <p>&copy; 2018 LoginApp, Inc.</p>
+      </footer>
+
+    </div> <!-- /container -->
+</body>
+
+{{!-- loadAlbum use ajax--}}
+<script>
+function loadAlbum(){
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+  if (this.readyState == 4 && this.status == 200) {
+    var myObj = JSON.parse(this.responseText);
+    let htmlCode = '';
+    console.log(myObj);
+    let html = renderAlbum(myObj, htmlCode);
+    document.getElementById("demo").innerHTML = html;
+      
+  }
+  };
+  xmlhttp.open("GET", "/album  ", true);
+  xmlhttp.send();
+}
+
+function renderAlbum(files, htmlCode) {
+  
+  let currentDate = new Date(files[0].uploadDate).toDateString(); 
+  htmlCode = '<button type="submit" class="delete-img">Delete</button><br><br>';
+  htmlCode += '<p>' + currentDate + '</p><br><ul class="wrapper">';
+  files.forEach(file => {
+
+    let uploadDate = new Date(file.uploadDate).toDateString();
+    if(uploadDate !== currentDate) {
+      currentDate = uploadDate;
+      htmlCode += '</ul><br><p>' + uploadDate+'</p><br><ul class="wrapper">';
+      
+    }
+    htmlCode += '<li><input type="checkbox" name="photos" id="cb'+file.filename+'" value="'+ file.filename +'" /><label for="cb'+file.filename+'" class="img-label"><span class="img-span"></span>';
+    htmlCode += '<a href="' + file.filename + '" target="_blank"><img src="' + file.filename + '" alt=""></a></label></li>';
+  });
+  htmlCode += '</ul>';
+  
+  return htmlCode;
+}
+</script>
+
+{{!-- dynamic option use jquery + ajax--}}
+<script>
+$(document).ready(function(){
+
+ load_json_data('country','Chọn tỉnh/thành phố');
+
+ function load_json_data(id, select, currentName)
+ {
+  var html_code = '';
+  $.getJSON('local.json', function(data){
+
+   html_code += '<option value=""> '+select+'</option>';
+   $.each(data, function(key, value){
+  
+    if(id == 'country')
+    {
+      html_code += '<option value="'+value.name+'">'+value.name+'</option>';
+    }
+    else if (id == 'state')
+    {
+        
+        if (value.name == currentName)
+        {
+            value.districts.forEach(function(element) {
+                html_code += '<option value="'+element.name+'">'+element.name+'</option>';
+            })
+        }
+        
+    }
+    else if (id == 'city')
+    {
+        value.districts.forEach(function(element) {
+            if (element.name == currentName) {
+                element.wards.forEach(function(elem) {
+                    html_code += '<option value="'+elem.name+'">'+elem.prefix + ' '+ elem.name+'</option>';
+                })
+            }
+        })
+     
+    }
+    
+   });
+   $('#'+id).html(html_code);
+  });
+
+ }
+
+ $(document).on('change', '#country', function(){
+  var country_id = $(this).val();
+  console.log(country_id);
+  if(country_id != '')
+  {
+   load_json_data('state', 'Chọn quận/huyện',country_id);
+  }
+  else
+  {
+   $('#state').html('<option value="">Select state</option>');
+   $('#city').html('<option value="">Select city</option>');
+  }
+ });
+
+ $(document).on('change', '#state', function(){
+  var state_id = $(this).val();
+  console.log(state_id);
+  if(state_id != '')
+  {
+   load_json_data('city', 'Chọn xã/phường',state_id);
+  }
+  else
+  {
+   $('#city').html('<option value="">Select city</option>');
+  }
+ });
+
+ 
+});
+</script>
+</html>
